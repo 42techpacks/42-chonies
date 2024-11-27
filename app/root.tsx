@@ -17,6 +17,7 @@ import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
 import {IonHaL} from './components/ionhal';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
+import deshea_pissing from '~/assets/deshea3.png';
 
 export type RootLoader = typeof loader;
 
@@ -181,14 +182,38 @@ export function ErrorBoundary() {
   }
 
   return (
-    <div className="route-error">
-      <h1>Oops</h1>
-      <h2>{errorStatus}</h2>
-      {errorMessage && (
-        <fieldset>
-          <pre>{errorMessage}</pre>
-        </fieldset>
-      )}
+    <div
+      className="w-full h-[100vh] gap-[25px] flex flex-col justify-center items-center text-black pb-[50px] font-[Montserrat]"
+      id="route-error"
+    >
+      <div
+        className="w-full flex flex-col justify-center items-center"
+        id="route-error-header"
+      >
+        <h1 className="text-[#ff4747] font-bold text-[30px]">Oopsie!</h1>
+        <h2 className="font-normal">Deshea don't f*ck w u.</h2>
+      </div>
+      <div className="w-full h-[300px] box-border flex justify-center align-center">
+        <img
+          className="object-contain w-full h-full"
+          src={deshea_pissing}
+          alt="Desehea"
+        />
+      </div>
+      <div
+        className="w-full flex flex-col justify-center items-center"
+        id="route-error-footer"
+      >
+        {errorMessage && (
+          <fieldset>
+            <pre>
+              <p className="w-full text-[#ff4747] text-xs">
+                ERROR {errorStatus}: {errorMessage}
+              </p>
+            </pre>
+          </fieldset>
+        )}
+      </div>
     </div>
   );
 }
