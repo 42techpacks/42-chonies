@@ -17,7 +17,7 @@ export default function TopBar() {
 
   return (
     <div
-      className="fixed top-[0px] w-full flex justify-between p-[15px]"
+      className="fixed top-[0px] w-full flex justify-between p-[15px] bg-white"
       id="topbar"
     >
       {iongafLogo}

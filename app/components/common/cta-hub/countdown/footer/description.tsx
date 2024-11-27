@@ -1,7 +1,7 @@
 import {useCTAState} from '~/contexts';
 
-export function Header() {
-  const {availableIsShowingSizeGuide: isShowingSizeGuide, dispatch} =
+export function Description() {
+  const {countdownIsShowingDescription: isShowingDescription, dispatch} =
     useCTAState();
 
   const downArrow = (
@@ -40,23 +40,28 @@ export function Header() {
   };
 
   return (
-    <div
-      className="h-[50px] w-full flex flex-row justify-between items-end pb-[10px] pr-[20px] pl-[20px]"
-      id="hub-header"
-    >
-      <h2 className="text-black text-3xl font-bold" id="hub-header-left">
-        ${productData.price}
-      </h2>
+    <>
       <button
-        className="flex flex-row justify-center items-center"
-        id="header-toggle"
-        onClick={() => dispatch({type: 'AVAILABLE_TOGGLE_SIZE_GUIDE'})}
+        className="w-full flex flex-row justify-center items-center"
+        id="hub-footer-toggle"
+        onClick={() => dispatch({type: 'COUNTDOWN_TOGGLE_DESCRIPTION'})}
       >
-        <h3 className="text-black text-sm font-bold" id="hub-header-left">
-          SIZE GUIDE
+        <h3
+          className="h-[50px] text-center flex items-center pb-[2px] text-black text-sm font-bold"
+          id="hub-footer-toggle-label"
+        >
+          DESCRIPTION
         </h3>
-        {isShowingSizeGuide ? upArrow : downArrow}
+        {isShowingDescription ? upArrow : downArrow}
       </button>
-    </div>
+      <div
+        className="h-auto w-full flex flex-col justify-start items-center font-normal tracking-wide leading-[27px]"
+        id="hub-footer-main"
+      >
+        {productData.description.map((desc, index) => (
+          <p key={index}>{desc}</p>
+        ))}
+      </div>
+    </>
   );
 }

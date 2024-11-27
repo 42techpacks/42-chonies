@@ -8,9 +8,9 @@ STATE -> E.g. toggles, styling
 See code for steps.
 */
 
-import { Dispatch, useContext, createContext, useReducer } from "react";
+import {Dispatch, useContext, createContext, useReducer} from 'react';
 
-export type Size = "S" | "M" | "L" | "XL" | "XXL";
+export type Size = 'S' | 'M' | 'L' | 'XL' | 'XXL';
 
 export const CTAContext = createContext<CTAContextType>({} as CTAContextType);
 
@@ -22,18 +22,20 @@ interface CTAContextType extends CTAState {
   /* STEP 1: Add type/thing to CTAAction, CTAState, and initalState */
 }
 export type CTAAction =
-  | { type: "AVAILABLE_SET_SIZE"; butt_stuff: Size }
-  | { type: "AVAILABLE_TOGGLE_SIZE_GUIDE" }
-  | { type: "AVAILABLE_TOGGLE_DESCRIPTION" }
-  | { type: "COUNTDOWN_TOGGLE_PRODUCT_VIEW" }
-  | { type: "SOLDOUT_TOGGLE_EMAIL_INPUT" }
-  | { type: "SOLDOUT_SET_SHOULD_SUBMIT"; shouldSubmit: boolean };
+  | {type: 'AVAILABLE_SET_SIZE'; butt_stuff: Size}
+  | {type: 'AVAILABLE_TOGGLE_SIZE_GUIDE'}
+  | {type: 'AVAILABLE_TOGGLE_DESCRIPTION'}
+  | {type: 'COUNTDOWN_TOGGLE_PRODUCT_VIEW'}
+  | {type: 'SOLDOUT_TOGGLE_EMAIL_INPUT'}
+  | {type: 'SOLDOUT_SET_SHOULD_SUBMIT'; shouldSubmit: boolean}
+  | {type: 'COUNTDOWN_TOGGLE_DESCRIPTION'};
 
 export interface CTAState {
   availableSelectedSizeIs: Size | null;
   availableIsShowingSizeGuide: boolean;
   availableIsShowingDescription: boolean;
   countdownIsProductShowing: boolean;
+  countdownIsShowingDescription: boolean;
   soldoutIsShowingEmailInput: boolean;
   soldoutShouldSubmit: boolean;
 }
@@ -43,6 +45,7 @@ const initialState: CTAState = {
   availableIsShowingSizeGuide: false,
   availableIsShowingDescription: false,
   countdownIsProductShowing: false,
+  countdownIsShowingDescription: false,
   soldoutIsShowingEmailInput: false,
   soldoutShouldSubmit: false,
 };
@@ -53,24 +56,29 @@ const initialState: CTAState = {
 
 const reducer = (state: CTAState, action: CTAAction): CTAState => {
   switch (action.type) {
-    case "AVAILABLE_SET_SIZE":
-      return { ...state, availableSelectedSizeIs: action.butt_stuff };
-    case "AVAILABLE_TOGGLE_SIZE_GUIDE":
+    case 'AVAILABLE_SET_SIZE':
+      return {...state, availableSelectedSizeIs: action.butt_stuff};
+    case 'AVAILABLE_TOGGLE_SIZE_GUIDE':
       return {
         ...state,
         availableIsShowingSizeGuide: !state.availableIsShowingSizeGuide,
       };
-    case "AVAILABLE_TOGGLE_DESCRIPTION":
+    case 'AVAILABLE_TOGGLE_DESCRIPTION':
       return {
         ...state,
         availableIsShowingDescription: !state.availableIsShowingDescription,
       };
-    case "SOLDOUT_TOGGLE_EMAIL_INPUT":
+    case 'COUNTDOWN_TOGGLE_DESCRIPTION':
+      return {
+        ...state,
+        countdownIsShowingDescription: !state.countdownIsShowingDescription,
+      };
+    case 'SOLDOUT_TOGGLE_EMAIL_INPUT':
       return {
         ...state,
         soldoutIsShowingEmailInput: !state.soldoutIsShowingEmailInput,
       };
-    case "SOLDOUT_SET_SHOULD_SUBMIT":
+    case 'SOLDOUT_SET_SHOULD_SUBMIT':
       return {
         ...state,
         soldoutShouldSubmit: action.shouldSubmit,
@@ -86,7 +94,7 @@ export function CTAProvider({
   const [state, dispatch] = useReducer(reducer, initialState);
 
   return (
-    <CTAContext.Provider value={{ ...state, dispatch }}>
+    <CTAContext.Provider value={{...state, dispatch}}>
       {children}
     </CTAContext.Provider>
   );
@@ -96,6 +104,6 @@ export function CTAProvider({
 export function useCTAState() {
   const context = useContext(CTAContext);
   if (context === undefined)
-    throw Error("useCTAState must be used within CTAProvider");
+    throw Error('useCTAState must be used within CTAProvider');
   return context;
 }
