@@ -1,6 +1,6 @@
-import { Form } from "@remix-run/react";
-import { useCTAState } from "~/contexts";
-import { useRef, useEffect } from "react";
+import {Form} from '@remix-run/react';
+import {useCTAState} from '~/contexts';
+import {useRef, useEffect} from 'react';
 
 export function EmailSignup() {
   const {
@@ -11,7 +11,7 @@ export function EmailSignup() {
   const formRef = useRef<HTMLFormElement>(null);
 
   const onFormSubmit = () => {
-    console.log("Form submitted.");
+    console.log('Form submitted.');
   };
 
   const mailIcon = (
@@ -33,14 +33,14 @@ export function EmailSignup() {
     console.log(shouldSubmit);
     if (shouldSubmit) {
       formRef.current?.requestSubmit();
-      dispatch({ type: "SOLDOUT_SET_SHOULD_SUBMIT", shouldSubmit: false });
+      dispatch({type: 'SOLDOUT_SET_SHOULD_SUBMIT', shouldSubmit: false});
     }
   }, [shouldSubmit, dispatch]);
 
   return (
     <div
       className="overflow-hidden transition-[height] duration-500 ease-out w-full flex flex-col justify-start items-center border border-[#ff4747] rounded-tl-[15px] rounded-tr-[15px]"
-      style={{ height: isShowingEmailInput ? "250px" : "50px" }}
+      style={{height: isShowingEmailInput ? '250px' : '50px'}}
     >
       {/* Header */}
       <div className="w-full h-[50px] flex flex-col justify-center items-center border-b border-[#ff4747]">
@@ -63,17 +63,17 @@ export function EmailSignup() {
             Sign up for the IONGAF newsletter.
           </p>
         </div>
-        <p className="w-full flex justify-start items-center gap-[10px] border border-black rounded-[25px] pl-[15px] pr-[15px]">
+        <p className="w-full flex h-[50px] justify-start items-center gap-[10px] border border-black rounded-[25px] pl-[15px] pr-[15px]">
           {mailIcon}
           <input
-            className="w-full h-[45px] bg-white focus:outline-none placeholder:text-grey placeholder:text-[18px] text-[18px]"
+            className="w-full h-[40px] border-0 bg-white focus:outline-none placeholder:text-grey placeholder:text-[18px] text-[18px]"
             placeholder="nik@fortytwoco.net"
             type="email"
             name="email"
           />
         </p>
         <p
-          className="text-red-500 mt-[-10px] opacity-[0.3]"
+          className="text-red-500 mt-[-10px] opacity-[1]"
           id="validation-error"
         >
           Please enter a valid email.
