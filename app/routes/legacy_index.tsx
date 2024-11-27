@@ -12,7 +12,7 @@ import type {
   FeaturedCollectionFragment,
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
-import {PageLayout} from '~/components/PageLayout';
+import {PageLayout} from '~/legacy_components/PageLayout';
 import {type RootLoader} from '~/root';
 
 export const meta: MetaFunction = () => {

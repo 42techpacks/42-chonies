@@ -6,7 +6,7 @@ import {
   useOptimisticCart,
 } from '@shopify/hydrogen';
 import type {HeaderQuery, CartApiQueryFragment} from 'storefrontapi.generated';
-import {useAside} from '~/components/Aside';
+import {useAside} from '~/legacy_components/Aside';
 
 interface HeaderProps {
   header: HeaderQuery;
@@ -103,11 +103,11 @@ function HeaderCtas({
     <nav className="header-ctas" role="navigation">
       <HeaderMenuMobileToggle />
       <NavLink prefetch="intent" to="/account" style={activeLinkStyle}>
-        <Suspense fallback="Sign in">
-          <Await resolve={isLoggedIn} errorElement="Sign in">
-            {(isLoggedIn) => (isLoggedIn ? 'Account' : 'Sign in')}
-          </Await>
-        </Suspense>
+      <Suspense fallback="Sign in">
+        <Await resolve={isLoggedIn} errorElement="Sign in">
+          {(isLoggedIn) => (isLoggedIn ? 'Account' : 'Sign in')}
+        </Await>
+      </Suspense>
       </NavLink>
       <SearchToggle />
       <CartToggle cart={cart} />
