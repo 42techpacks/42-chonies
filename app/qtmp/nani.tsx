@@ -12,12 +12,11 @@ import type {
   FeaturedCollectionFragment,
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
-import {PageLayout} from '~/legacy_components/PageLayout';
 import {type RootLoader} from '~/root';
 
-export const meta: MetaFunction = () => {
-  return [{title: 'Hydrogen | Home'}];
-};
+// export const meta: MetaFunction = () => {
+//   return [{title: 'Hydrogen | Home'}];
+// };
 
 export async function loader(args: LoaderFunctionArgs) {
   // Start fetching non-critical data without blocking time to first byte
