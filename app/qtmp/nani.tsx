@@ -36,6 +36,7 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
   const [{collections}] = await Promise.all([
     context.storefront.query(FEATURED_COLLECTION_QUERY),
     // Add other queries here, so that they are loaded in parallel
+    // TODO: Copy into _index and Load product info here
   ]);
 
   return {

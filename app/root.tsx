@@ -91,6 +91,8 @@ export async function loader(args: LoaderFunctionArgs) {
 async function loadCriticalData({context}: LoaderFunctionArgs) {
   const {storefront} = context;
 
+  //TODO: change this to only query the brand logo and maybe the tunes
+  // so ricky has more flexibility
   const [header] = await Promise.all([
     storefront.query(HEADER_QUERY, {
       cache: storefront.CacheLong(),
@@ -110,25 +112,11 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
  * Make sure to not throw any errors here, as it will cause the page to 500.
  */
 function loadDeferredData({context}: LoaderFunctionArgs) {
-  const {storefront, customerAccount, cart} = context;
+  // NOTE: We need to query the cart for analytics even though we don't use it
+  const {cart} = context;
 
-  // defer the footer query (below the fold)
-  const footer = storefront
-    .query(FOOTER_QUERY, {
-      cache: storefront.CacheLong(),
-      variables: {
-        footerMenuHandle: 'footer', // Adjust to your footer menu handle
-      },
-    })
-    .catch((error) => {
-      // Log query errors, but don't throw them so the page can still render
-      console.error(error);
-      return null;
-    });
   return {
     cart: cart.get(),
-    isLoggedIn: customerAccount.isLoggedIn(),
-    footer,
   };
 }
 
@@ -151,7 +139,6 @@ export function Layout({children}: {children?: React.ReactNode}) {
             shop={data.shop}
             consent={data.consent}
           >
-            {/* <PageLayout {...data}>{children}</PageLayout> */}
             <IonHaL> {children} </IonHaL>
           </Analytics.Provider>
         ) : (
