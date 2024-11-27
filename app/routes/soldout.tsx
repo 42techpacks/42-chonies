@@ -1,6 +1,6 @@
 import {useCTAState} from '~/contexts';
 import {useEffect} from 'react';
-import deshea_needs_to_pee from '~/assets/deshea2.png'
+import deshea_needs_to_pee from '~/assets/deshea2.png';
 
 export default function Soldout() {
   const {soldoutIsShowingEmailInput: isShowingEmailInput} = useCTAState();

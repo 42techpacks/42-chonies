@@ -2,7 +2,11 @@ import {useState, useEffect} from 'react';
 import {useCTAState} from '~/contexts';
 import {AvailableHeader, AvailableFooter, SizeGuide} from './available';
 import {CountdownHeader, CountdownFooter, CountdownTimer} from './countdown';
-import {useLocation} from '@remix-run/react';
+import {
+  useLocation,
+  useRouteError,
+  isRouteErrorResponse,
+} from '@remix-run/react';
 import {
   SoldoutEmailSignup,
   SoldoutFooter,
@@ -14,6 +18,11 @@ import {
 type Route = 'AVAILABLE' | 'COUNTDOWN' | 'SOLDOUT';
 
 export function CTAHub() {
+  const error = useRouteError();
+  if (isRouteErrorResponse(error)) {
+    return;
+  }
+
   const [buttonHighlight, setButtonHighlight] = useState<boolean>(false);
   const location = useLocation();
   const {
