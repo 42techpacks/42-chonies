@@ -1,7 +1,7 @@
 import type {ProductVariantFragment} from 'storefrontapi.generated';
 import {Image} from '@shopify/hydrogen';
 
-export function ProductImage({
+export function LegacyProductImage({
   image,
 }: {
   image: ProductVariantFragment['image'];
