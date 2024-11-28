@@ -50,14 +50,12 @@ const cgReducer = (state: CGState, action: {type: string}): CGState => {
         ...cgInitState,
       };
     case 'TICK':
-      if (state.isInProgress) {
-        return {
-          ...state,
-          timeRemaining: state.timeRemaining - 1,
-        };
-      } else {
-        return state;
-      }
+      return {
+        ...state,
+        timeRemaining: state.isInProgress
+          ? state.timeRemaining - 1
+          : state.timeRemaining,
+      };
 
     case 'PUNCH':
       if (state.timeRemaining === 0) {
