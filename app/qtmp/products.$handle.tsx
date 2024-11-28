@@ -10,7 +10,7 @@ import {
 import type {SelectedOption} from '@shopify/hydrogen/storefront-api-types';
 import {getVariantUrl} from '~/lib/variants';
 import {ProductPrice} from '~/legacy_components/ProductPrice';
-import {ProductImage} from '~/legacy_components/ProductImage';
+import {LegacyProductImage} from '~/legacy_components/ProductImage';
 import {ProductForm} from '~/legacy_components/ProductForm';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
@@ -44,7 +44,7 @@ async function loadCriticalData({
   }
 
   const [{product}] = await Promise.all([
-    storefront.query(PRODUCT_QUERY, {
+    storefront.query(LEGACY_PRODUCT_QUERY, {
       variables: {handle, selectedOptions: getSelectedProductOptions(request)},
     }),
     // Add other queries here, so that they are loaded in parallel
@@ -137,7 +137,7 @@ export default function Product() {
 
   return (
     <div className="product">
-      <ProductImage image={selectedVariant?.image} />
+      <LegacyProductImage image={selectedVariant?.image} />
       <div className="product-main">
         <h1>{title}</h1>
         <ProductPrice
@@ -195,8 +195,8 @@ export default function Product() {
   );
 }
 
-const PRODUCT_VARIANT_FRAGMENT = `#graphql
-  fragment ProductVariant on ProductVariant {
+const LEGACY_PRODUCT_VARIANT_FRAGMENT = `#graphql
+  fragment LProductVariant on ProductVariant {
     availableForSale
     compareAtPrice {
       amount
@@ -232,8 +232,8 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
   }
 ` as const;
 
-const PRODUCT_FRAGMENT = `#graphql
-  fragment Product on Product {
+const LEGACY_PRODUCT_FRAGMENT = `#graphql
+  fragment LProduct on Product {
     id
     title
     vendor
@@ -247,11 +247,11 @@ const PRODUCT_FRAGMENT = `#graphql
       }
     }
     selectedVariant: variantBySelectedOptions(selectedOptions: $selectedOptions, ignoreUnknownOptions: true, caseInsensitiveMatch: true) {
-      ...ProductVariant
+      ...LProductVariant
     }
     variants(first: 1) {
       nodes {
-        ...ProductVariant
+        ...LProductVariant
       }
     }
     seo {
@@ -259,10 +259,10 @@ const PRODUCT_FRAGMENT = `#graphql
       title
     }
   }
-  ${PRODUCT_VARIANT_FRAGMENT}
+  ${LEGACY_PRODUCT_VARIANT_FRAGMENT}
 ` as const;
 
-const PRODUCT_QUERY = `#graphql
+const LEGACY_PRODUCT_QUERY = `#graphql
   query Product(
     $country: CountryCode
     $handle: String!
@@ -270,13 +270,13 @@ const PRODUCT_QUERY = `#graphql
     $selectedOptions: [SelectedOptionInput!]!
   ) @inContext(country: $country, language: $language) {
     product(handle: $handle) {
-      ...Product
+      ...LProduct
     }
   }
-  ${PRODUCT_FRAGMENT}
+  ${LEGACY_PRODUCT_FRAGMENT}
 ` as const;
 
-const PRODUCT_VARIANTS_FRAGMENT = `#graphql
+const LEGACY_PRODUCT_VARIANTS_FRAGMENT = `#graphql
   fragment ProductVariants on Product {
     variants(first: 250) {
       nodes {
@@ -284,11 +284,11 @@ const PRODUCT_VARIANTS_FRAGMENT = `#graphql
       }
     }
   }
-  ${PRODUCT_VARIANT_FRAGMENT}
+  ${LEGACY_PRODUCT_VARIANT_FRAGMENT}
 ` as const;
 
 const VARIANTS_QUERY = `#graphql
-  ${PRODUCT_VARIANTS_FRAGMENT}
+  ${LEGACY_PRODUCT_VARIANTS_FRAGMENT}
   query ProductVariants(
     $country: CountryCode
     $language: LanguageCode

@@ -19,11 +19,11 @@ export function Footer({
         {(footer) => (
           <footer className="footer">
             {footer?.menu && header.shop.primaryDomain?.url && (
-              // <FooterMenu
-              //   menu={footer.menu}
-              //   primaryDomainUrl={header.shop.primaryDomain.url}
-              //   publicStoreDomain={publicStoreDomain}
-              // />
+              <FooterMenu
+                menu={footer.menu}
+                primaryDomainUrl={header.shop.primaryDomain.url}
+                publicStoreDomain={publicStoreDomain}
+              />
             )}
           </footer>
         )}
