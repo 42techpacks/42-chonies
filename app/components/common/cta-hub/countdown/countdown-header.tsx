@@ -13,6 +13,10 @@ export function Header({timeRemaining, dispatch}: CountdownHeaderProps) {
   const isProductShowing =
     location.pathname.includes('countdown') &&
     location.pathname.includes('product');
+  
+  const isLeaderboardShowing =
+    location.pathname.includes('countdown') &&
+    location.pathname.includes('leaderboard');
 
   let buttonLabel: string;
   let buttonOnclick: () => void = () => {};
@@ -31,6 +35,8 @@ export function Header({timeRemaining, dispatch}: CountdownHeaderProps) {
       dispatch({type: 'RESET'});
       nav('/countdown', {replace: true, state: {...cgInitState}});
     };
+  } else if (isLeaderboardShowing) {
+    // No button or price needed for leaderboard
   } else {
     buttonLabel = 'VIEW PRODUCT';
     buttonOnclick = () => {
@@ -44,21 +50,25 @@ export function Header({timeRemaining, dispatch}: CountdownHeaderProps) {
       className="h-[50px] w-full flex flex-row justify-between items-end pb-[10px] pr-[20px] pl-[20px]"
       id="hub-header"
     >
-      <h2 className="text-black text-3xl font-bold" id="hub-header-left">
-        {priceLabel}
-      </h2>
-      <button
-        className="flex flex-row justify-center items-center"
-        id="header-toggle"
-        onClick={buttonOnclick}
-      >
-        <h3
-          className="border border-black rounded-[15px] p-[5px] pl-[10px] pr-[10px] text-black text-sm font-bold"
-          id="hub-header-left"
+      {!isLeaderboardShowing && (
+        <h2 className="text-black text-3xl font-bold" id="hub-header-left">
+          {priceLabel}
+        </h2>
+      )}
+      {!isLeaderboardShowing && (
+        <button
+          className="flex flex-row justify-center items-center"
+          id="header-toggle"
+          onClick={buttonOnclick}
         >
-          {buttonLabel}
-        </h3>
-      </button>
+          <h3
+            className="border border-black rounded-[15px] p-[5px] pl-[10px] pr-[10px] text-black text-sm font-bold"
+            id="hub-header-left"
+          >
+            {buttonLabel}
+          </h3>
+        </button>
+      )}
     </div>
   );
 }
