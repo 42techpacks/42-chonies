@@ -1,11 +1,13 @@
 import {useCTAState} from '~/contexts';
 import {Description} from './description';
+import {useLocation} from '@remix-run/react';
 
 export function Footer() {
-  const {
-    countdownIsProductShowing: isProductShowing,
-    countdownIsShowingDescription: isShowingDescription,
-  } = useCTAState();
+  const location = useLocation();
+  const {countdownIsShowingDescription: isShowingDescription} = useCTAState();
+  const isProductShowing =
+    location.pathname.includes('countdown') &&
+    location.pathname.includes('product');
 
   return (
     <div

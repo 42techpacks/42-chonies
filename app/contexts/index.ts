@@ -1,1 +1,1 @@
-export * from "./CTAContext";
+export * from './cta-context';
