@@ -144,7 +144,7 @@ export function CTAHub() {
 
   /* Update viewport w/ latest state */
   useEffect(() => {
-    if (route === 'COUNTDOWN' && !isProductShowing)
+    if (cgState.isInProgress)
       nav('/countdown', {replace: true, state: {...cgState}});
   }, [cgState, nav, isProductShowing, route]);
 
@@ -156,12 +156,12 @@ export function CTAHub() {
       if (cgState.timeRemaining <= 1) {
         cgDispatch({type: 'STOP'});
         setEnableFlash(true);
-        nav('/countdown', {replace: true, state: cgInitState});
+        // nav('/countdown', {replace: true});
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [cgState.isInProgress, cgState.timeRemaining, nav]);
+  }, [cgState.isInProgress, cgState.timeRemaining]);
 
   if (error) {
     return;

@@ -1,5 +1,6 @@
 import {Link, replace, useLocation, useNavigate} from '@remix-run/react';
 import {type Dispatch} from 'react';
+import {cgInitState} from '../cta-hub';
 
 interface CountdownHeaderProps {
   timeRemaining: number;
@@ -28,12 +29,12 @@ export function Header({timeRemaining, dispatch}: CountdownHeaderProps) {
     buttonLabel = 'RESET GAME';
     buttonOnclick = () => {
       dispatch({type: 'RESET'});
+      nav('/countdown', {replace: true, state: {...cgInitState}});
     };
   } else {
     buttonLabel = 'VIEW PRODUCT';
     buttonOnclick = () => {
       dispatch({type: 'RESET'});
-      console.log('nani');
       nav('/countdown/product');
     };
   }
