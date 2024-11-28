@@ -1,1 +1,1 @@
-export { SizeGuide } from "./size-guide";
+export {SizeGuide} from './size-guide';

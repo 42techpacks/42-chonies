@@ -1,17 +1,23 @@
-import { useState, useEffect } from "react";
+import {useState, useEffect, useRef} from 'react';
+import {useCTAState} from '~/contexts';
+import {Form} from '@remix-run/react';
 
 export function Timer() {
-  const [timeRemaining, setTimeRemaining] = useState<string>("00:00:00:00");
+  const [timeRemaining, setTimeRemaining] = useState<string>('00:00:00:00');
+  const formRef = useRef(null);
+
+  const {countdownIsShowingLeaderboardInput: isShowingLeaderboardInput} =
+    useCTAState();
 
   const productData = {
-    price: "42",
+    price: '42',
     description: [
-      "1 free chonie",
-      "random color",
-      "ships next day",
-      "we love you guys!",
+      '1 free chonie',
+      'random color',
+      'ships next day',
+      'we love you guys!',
     ],
-    releaseDate: "2024-11-27T12:00-08:00",
+    releaseDate: '2024-11-28T12:00-08:00',
   };
 
   useEffect(() => {
@@ -21,7 +27,7 @@ export function Timer() {
       const difference = release - now;
 
       if (difference <= 0) {
-        setTimeRemaining("00:00:00:00");
+        setTimeRemaining('00:00:00:00');
         return;
       }
 
@@ -31,11 +37,11 @@ export function Timer() {
       const seconds = Math.floor((difference / 1000) % 60);
 
       setTimeRemaining(
-        `${days.toString().padStart(2, "0")}:${hours
+        `${days.toString().padStart(2, '0')}:${hours
           .toString()
-          .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds
+          .padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds
           .toString()
-          .padStart(2, "0")}`
+          .padStart(2, '0')}`,
       );
     };
 
@@ -47,21 +53,53 @@ export function Timer() {
 
   return (
     <div
-      className="w-full h-50 flex flex-col justify-center items-center p-[10px] bg-white text-[#ff4747] rounded-tl-[15px] rounded-tr-[15px] border border-[#ff4747]"
-      id="timer"
+      className="overflow-hidden transition-[height] duration-500 ease-out w-full flex flex-col justify-start items-center border border-[#ff4747] rounded-tl-[15px] rounded-tr-[15px]"
+      style={{height: isShowingLeaderboardInput ? '250px' : '50px'}}
     >
-      <h4
-        className="text-xs leading-snug font-bold tracking-wide"
-        id="timer-subtitle"
+      {/* Header */}
+      <div className="w-full min-h-[50px] flex flex-col justify-center items-center text-[#ff4747] box-border border-b border-[#ff4747]">
+        <h4
+          className="text-[12px] h-auto font-bold tracking-wide flex flex-col justify-center items-center"
+          id="timer-subtitle"
+        >
+          WEBSITE OPENS IN
+          <span className="text-[15px]" id="timer-title">
+            {timeRemaining}
+          </span>
+        </h4>
+      </div>
+      {/* Email Form */}
+      <Form
+        className="w-full h-auto flex flex-col justify-center items-center gap-[20px]"
+        method="post"
+        ref={formRef}
+        onSubmit={() => console.log('Form Submitted.')}
       >
-        WEBSITE OPENS IN
-      </h4>
-      <h4
-        className="text-[28px] leading-9 font-bold tracking-wide"
-        id="timer-title"
-      >
-        {timeRemaining}
-      </h4>
+        <div className="w-full flex flex-col justify-center items-center gap-[5px] pt-[20px]">
+          <h3 className="font-bold text-black tracking-wide text-xl">
+            DO YOU SUCK?
+          </h3>
+          <p className="font-normal tracking-wide text-m">
+            Enter your name to save your score.
+          </p>
+        </div>
+        <div className="w-full flex flex-col justify-center items-center gap-[20px] pl-[15px] pr-[15px]">
+          <p className="w-full flex h-[50px] justify-start items-center gap-[10px] border border-black rounded-[25px] pl-[15px] pr-[15px]">
+            <input
+              className="w-full h-[40px] border-0 bg-white focus:outline-none placeholder:text-grey placeholder:text-[18px] text-[18px]"
+              placeholder="notnik"
+              type="email"
+              name="email"
+            />
+          </p>
+          <p
+            className="text-red-500 mt-[-10px] opacity-[1]"
+            id="validation-error"
+          >
+            Please enter a valid name.
+          </p>
+        </div>
+      </Form>
     </div>
   );
 }

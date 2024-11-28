@@ -1,7 +1,7 @@
-import { useCTAState } from "~/contexts";
+import {useCTAState} from '~/contexts';
 
 export function Footer() {
-  const { availableIsShowingDescription: isShowingDescription, dispatch } =
+  const {availableIsShowingDescription: isShowingDescription, dispatch} =
     useCTAState();
 
   const downArrow = (
@@ -29,26 +29,26 @@ export function Footer() {
   );
 
   const productData = {
-    price: "42",
+    price: '42',
     description: [
-      "1 free chonie",
-      "random color",
-      "ships next day",
-      "we love you guys!",
+      '1 free chonie',
+      'random color',
+      'ships next day',
+      'we love you guys!',
     ],
-    releaseDate: "2024-11-27T12:00-08:00",
+    releaseDate: '2024-11-27T12:00-08:00',
   };
 
   return (
     <div
       className="overflow-hidden transition-[height] duration-500 ease-out w-full bg-white flex flex-col justify-start items-center"
-      style={{ height: isShowingDescription ? "200px" : "50px" }}
+      style={{height: isShowingDescription ? '200px' : '50px'}}
       id="hub-footer"
     >
       <button
         className="w-full flex flex-row justify-center items-center"
         id="hub-footer-toggle"
-        onClick={() => dispatch({ type: "AVAILABLE_TOGGLE_DESCRIPTION" })}
+        onClick={() => dispatch({type: 'AVAILABLE_TOGGLE_DESCRIPTION'})}
       >
         <h3
           className="h-[50px] text-center flex items-center pb-[2px] text-black text-sm font-bold"

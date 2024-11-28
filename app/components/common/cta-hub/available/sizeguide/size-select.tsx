@@ -1,9 +1,9 @@
-import { Size, useCTAState } from "~/contexts";
+import {Size, useCTAState} from '~/contexts';
 
 export function SizeSelect() {
   // Dummy data for the size guide table
-  const sizeHeaderData: Size[] = ["S", "M", "L", "XL", "XXL"]; // Dynamically defined sizes
-  const { availableSelectedSizeIs: selectedSizeIs, dispatch } = useCTAState();
+  const sizeHeaderData: Size[] = ['S', 'M', 'L', 'XL', 'XXL']; // Dynamically defined sizes
+  const {availableSelectedSizeIs: selectedSizeIs, dispatch} = useCTAState();
 
   return (
     <tr className="w-full" id="size-select">
@@ -20,11 +20,11 @@ export function SizeSelect() {
           <button
             className={`w-full h-full transition-all ${
               selectedSizeIs === size
-                ? "bg-[#ff4747] text-white"
-                : "text-[#ff4747]"
+                ? 'bg-[#ff4747] text-white'
+                : 'text-[#ff4747]'
             }`}
             onClick={() =>
-              dispatch({ type: "AVAILABLE_SET_SIZE", butt_stuff: size })
+              dispatch({type: 'AVAILABLE_SET_SIZE', butt_stuff: size})
             }
           >
             <h5 className="text-center font-bold">{size}</h5>

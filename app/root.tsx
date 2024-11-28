@@ -190,8 +190,9 @@ export function ErrorBoundary() {
         className="w-full flex flex-col justify-center items-center"
         id="route-error-header"
       >
+        {}
         <h1 className="text-[#ff4747] font-bold text-[30px]">Oopsie!</h1>
-        <h2 className="font-normal">Deshea don't f*ck w u.</h2>
+        <h2 className="font-normal">Deshea don&apos;t f*ck w u.</h2>
       </div>
       <div className="w-full h-[300px] box-border flex justify-center align-center">
         <img
@@ -205,9 +206,12 @@ export function ErrorBoundary() {
         id="route-error-footer"
       >
         {errorMessage && (
-          <fieldset>
-            <pre>
-              <p className="w-full text-[#ff4747] text-xs">
+          <fieldset className="w-[400px]">
+            <pre className="flex justify-center items-center">
+              <p
+                className="w-[350px] text-center text-[#ff4747] text-xs"
+                style={{whiteSpace: 'normal'}}
+              >
                 ERROR {errorStatus}: {errorMessage}
               </p>
             </pre>
