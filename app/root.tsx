@@ -16,7 +16,7 @@ import favicon from '~/assets/favicon.svg';
 // import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
 import {IonHaL} from './components/ionhal';
-import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
+import {THE_CHONIE_ONE, HEADER_QUERY} from '~/lib/fragments';
 
 export type RootLoader = typeof loader;
 
@@ -93,7 +93,7 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
 
   //TODO: change this to only query the brand logo and maybe the tunes
   // so ricky has more flexibility
-  const [header] = await Promise.all([
+  const [header, {products}] = await Promise.all([
     storefront.query(HEADER_QUERY, {
       cache: storefront.CacheLong(),
       variables: {
@@ -101,9 +101,16 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
       },
     }),
     // Add other queries here, so that they are loaded in parallel
+    storefront.query(THE_CHONIE_ONE, {variables: {query: 'shirt'}}),
   ]);
 
-  return {header};
+  const product = products.nodes[0];
+
+  if (!product?.id) {
+    //TODO: test this plays nice with milos error hanlder
+    throw new Response('we got no product', {status: 404});
+  }
+  return {header, product};
 }
 
 /**
@@ -139,7 +146,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
             shop={data.shop}
             consent={data.consent}
           >
-            <IonHaL> {children} </IonHaL>
+            <IonHaL product={data.product}> {children} </IonHaL>
           </Analytics.Provider>
         ) : (
           children

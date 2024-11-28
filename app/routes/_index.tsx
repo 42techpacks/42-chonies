@@ -1,8 +1,15 @@
-// import type {MetaFunction} from '@remix-run/node';
-// import {json, redirect} from '@remix-run/node';
-// import Countdown from "./countdown";
+import type {LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import black_chonie from '~/assets/black-chonie.png';
-import type {MetaFunction} from '@remix-run/react';
+import {
+  defer,
+  useLoaderData,
+  useRouteLoaderData,
+  type MetaFunction,
+} from '@remix-run/react';
+import {useEffect} from 'react';
+import {ProductImage} from '~/components/common/ProductImage';
+import type {ProductFragment, ProductQuery} from 'storefrontapi.generated';
+import {type RootLoader} from '~/root';
 
 export const meta: MetaFunction = () => {
   return [
@@ -11,33 +18,13 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-// export const loader = async () => {
-//   console.log('loader');
-//   return json({});
-// };
-
-// export const action = async () => {
-//   console.log('action');
-//   return json({});
-// };
-
+interface AvailableProps {
+  product: ProductFragment;
+}
 export default function Available() {
-  // Dummy Images
-  const images = [
-    {src: black_chonie, alt: 'Black Chonie 1'},
-    {src: black_chonie, alt: 'Black Chonie 2'},
-    {src: black_chonie, alt: 'Black Chonie 3'},
-    {src: black_chonie, alt: 'Black Chonie 4'},
-    {src: black_chonie, alt: 'Black Chonie 1'},
-    {src: black_chonie, alt: 'Black Chonie 2'},
-    {src: black_chonie, alt: 'Black Chonie 3'},
-    {src: black_chonie, alt: 'Black Chonie 4'},
-    {src: black_chonie, alt: 'Black Chonie 1'},
-    {src: black_chonie, alt: 'Black Chonie 2'},
-    {src: black_chonie, alt: 'Black Chonie 3'},
-    {src: black_chonie, alt: 'Black Chonie 4'},
-  ];
-
+  const root_data = useRouteLoaderData<RootLoader>('root');
+  if (!root_data?.product) return <div>Loading... </div>
+  const product = root_data.product
   /* Load 'AVAILABLE' state by default */
   return (
     <div
@@ -48,14 +35,8 @@ export default function Available() {
         className="w-full flex flex-col justify-center items-center pt-[150px] pb-[350px]"
         id="available-main"
       >
-        {images.map((image) => (
-          <div
-            key={image.alt}
-            className="w-full h-[430px] flex justify-center items-center"
-            id="image-container"
-          >
-            <img src={image.src} alt={image.alt} />
-          </div>
+        {product.images.nodes.map((image) => (
+          <ProductImage key={image.id} image={image} />
         ))}
       </div>
     </div>
