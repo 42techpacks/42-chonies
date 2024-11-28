@@ -15,8 +15,7 @@ import damage2 from '~/assets/damage-two.png';
 import damage3 from '~/assets/damage-three.png';
 import punchLeft from '~/assets/deshea-punch-left.png';
 import punchRight from '~/assets/deshea-punch-right.png';
-
-// import { onClickHandler as onClickHandlerInSoldOut } from "~/routes/soldout";
+import clsx from 'clsx';
 
 type Route = 'AVAILABLE' | 'COUNTDOWN' | 'SOLDOUT';
 
@@ -39,6 +38,7 @@ const cgReducer = (state: CGState, action: {type: string}): CGState => {
       return {
         ...state,
         isInProgress: true,
+        numPunches: state.numPunches + 1,
       };
     case 'STOP':
       return {
@@ -63,13 +63,6 @@ const cgReducer = (state: CGState, action: {type: string}): CGState => {
       if (state.timeRemaining === 0) {
         return {
           ...state,
-        };
-      }
-      if (!state.isInProgress) {
-        return {
-          ...state,
-          isInProgress: true,
-          numPunches: state.numPunches + 1,
         };
       }
 
@@ -103,7 +96,6 @@ const cgReducer = (state: CGState, action: {type: string}): CGState => {
 
 export function CTAHub() {
   const error = useRouteError();
-  // const fetcher = useFetcher();
   const nav = useNavigate();
   const location = useLocation();
   const [buttonHighlight, setButtonHighlight] = useState<boolean>(false);
@@ -124,21 +116,35 @@ export function CTAHub() {
     route = 'SOLDOUT';
   }
 
+  const gameOver =
+    !isProductShowing && cgState.timeRemaining === 0 && !cgState.isInProgress;
+
+  const [enableFlash, setEnableFlash] = useState<boolean>(
+    route === 'AVAILABLE',
+  );
+
   /* Button Highlight */
   useEffect(() => {
-    if (route !== 'AVAILABLE') return;
+    if (!enableFlash) return;
 
     const interval = setInterval(() => {
       setButtonHighlight(true);
-      setTimeout(() => setButtonHighlight(false), 400); // Highlight for 1 second
-    }, 2000); // Every 3 seconds
-    return () => clearInterval(interval); // Cleanup on unmount
-  }, [route]);
+      setTimeout(() => {
+        setButtonHighlight(false);
+        if (gameOver) {
+          setTimeout(() => {
+            setEnableFlash(false);
+          }, 3000);
+        }
+      }, 300);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [enableFlash, gameOver]);
 
   /* Update viewport w/ latest state */
   useEffect(() => {
-    route === 'COUNTDOWN' &&
-      !isProductShowing &&
+    if (route === 'COUNTDOWN' && !isProductShowing)
       nav('/countdown', {replace: true, state: {...cgState}});
   }, [cgState, nav, isProductShowing, route]);
 
@@ -149,16 +155,117 @@ export function CTAHub() {
       cgDispatch({type: 'TICK'});
       if (cgState.timeRemaining <= 1) {
         cgDispatch({type: 'STOP'});
+        setEnableFlash(true);
         nav('/countdown', {replace: true, state: cgInitState});
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [cgState.isInProgress, cgState.timeRemaining]);
+  }, [cgState.isInProgress, cgState.timeRemaining, nav]);
 
   if (error) {
     return;
   }
+
+  const cgStateUpdater = () => {
+    if (
+      route === 'COUNTDOWN' &&
+      !isProductShowing &&
+      cgState.timeRemaining === cgInitState.timeRemaining &&
+      !cgState.isInProgress
+    )
+      cgDispatch({type: 'START'});
+    if (cgState.isInProgress) cgDispatch({type: 'PUNCH'});
+  };
+
+  let header = <AvailableHeader />;
+  if (route === 'COUNTDOWN') {
+    header = (
+      <CountdownHeader
+        timeRemaining={cgState.timeRemaining}
+        dispatch={cgDispatch}
+      />
+    );
+  }
+  if (route === 'SOLDOUT') {
+    header = <SoldoutHeader />;
+  }
+
+  let main = <SizeGuide />;
+  if (route === 'COUNTDOWN') {
+    main = <CountdownTimer />;
+  }
+  if (route === 'SOLDOUT') {
+    main = <SoldoutEmailSignup />;
+  }
+
+  let footer = <AvailableFooter />;
+  if (route === 'COUNTDOWN') {
+    footer = <CountdownFooter />;
+  }
+  if (route === 'SOLDOUT') {
+    footer = <SoldoutFooter />;
+  }
+
+  let buttonLabel;
+  if (route === 'AVAILABLE') {
+    buttonLabel = 'CLICK HERE TO BUY NOW';
+  } else if (route === 'COUNTDOWN') {
+    if (isProductShowing) {
+      buttonLabel = (
+        <>
+          YOU CAN'T BUY <br />
+          THIS RIGHT NOW
+        </>
+      );
+    } else if (
+      !isProductShowing &&
+      cgState.timeRemaining !== 0 &&
+      cgState.isInProgress
+    ) {
+      buttonLabel = <span className="text-[55px]">PUNCH</span>;
+    } else if (
+      !isProductShowing &&
+      cgState.timeRemaining !== 0 &&
+      !cgState.isInProgress
+    ) {
+      buttonLabel = <span className="text-[35px]">PUNCH TO START</span>;
+    } else if (
+      !isProductShowing &&
+      cgState.timeRemaining === 0 &&
+      !enableFlash
+    ) {
+      buttonLabel = (
+        <span className="text-[40px] leading-[15px]">
+          SUBMIT TO <br /> LEADERBOARD
+        </span>
+      );
+    } else if (
+      !isProductShowing &&
+      cgState.timeRemaining === 0 &&
+      enableFlash
+    ) {
+      buttonLabel = (
+        <span className="text-[55px] leading-[15px]">GAME OVER</span>
+      );
+    }
+  } else if (route === 'SOLDOUT') {
+    buttonLabel = isShowingEmailInput ? (
+      'SUBMIT'
+    ) : (
+      <>
+        CLICK HERE TO <br /> SAVE DESHEA!
+      </>
+    );
+  }
+
+  const buttonOnClick = () => {
+    cgStateUpdater();
+    if (gameOver && !enableFlash)
+      dispatch({type: 'COUNTDOWN_TOGGLE_LEADERBOARD_INPUT'});
+    route === 'AVAILABLE' && console.log('avbaialble click');
+    route === 'SOLDOUT' && soldOutClickHandler(isShowingEmailInput, dispatch);
+  };
 
   return (
     <div
@@ -166,99 +273,32 @@ export function CTAHub() {
       id="hub-container"
     >
       {/* Header */}
-      {route === 'AVAILABLE' && <AvailableHeader />}
-      {route === 'COUNTDOWN' && (
-        <CountdownHeader
-          timeRemaining={cgState.timeRemaining}
-          dispatch={cgDispatch}
-        />
-      )}
-      {route === 'SOLDOUT' && <SoldoutHeader />}
+      {header}
 
       {/* Main */}
       <div
         className="w-full bg-white gap-[0px] flex flex-col justify-center items-center pr-[20px] pl-[20px]"
         id="hub-main"
       >
-        {route === 'AVAILABLE' && <SizeGuide />}
-        {route === 'COUNTDOWN' && <CountdownTimer />}
-        {route === 'SOLDOUT' && <SoldoutEmailSignup />}
+        {main}
 
         {/* Big CTA Button */}
         <button
-          className={`h-[125px] w-full border border-[#ff4747] rounded-bl-[15px] rounded-br-[15px] p-[15px] ${
-            buttonHighlight || cgState.timeRemaining === 0
+          className={clsx(
+            'h-[125px] w-full border border-[#ff4747] rounded-bl-[15px] rounded-br-[15px] p-[15px]',
+            buttonHighlight
               ? 'bg-white text-[#ff4747]'
-              : 'bg-[#ff4747] text-white'
-          }`}
+              : 'bg-[#ff4747] text-white',
+          )}
           id="cta-button"
-          onClick={() => {
-            route === 'COUNTDOWN' &&
-              !isProductShowing &&
-              cgState.timeRemaining !== 0 &&
-              cgDispatch({type: 'PUNCH'});
-            route === 'COUNTDOWN' &&
-              !isProductShowing &&
-              cgState.timeRemaining === 0 &&
-              dispatch({type: 'COUNTDOWN_TOGGLE_LEADERBOARD_INPUT'});
-            route === 'AVAILABLE' && console.log('avbaialble click');
-            route === 'SOLDOUT' &&
-              soldOutClickHandler(isShowingEmailInput, dispatch);
-          }}
+          onClick={buttonOnClick}
         >
-          <h2 className="text-[32px] font-bold">
-            {/* Available Labels */}
-            {route === 'AVAILABLE' && <>CLICK HERE TO BUY NOW</>}
-
-            {/* Countdown Labels */}
-            {route === 'COUNTDOWN' && isProductShowing && (
-              <>
-                YOU CAN'T BUY <br />
-                THIS RIGHT NOW
-              </>
-            )}
-            {route === 'COUNTDOWN' &&
-              !isProductShowing &&
-              cgState.timeRemaining !== 0 &&
-              cgState.isInProgress && (
-                <span className="text-[55px]">PUNCH</span>
-              )}
-
-            {route === 'COUNTDOWN' &&
-              !isProductShowing &&
-              cgState.timeRemaining !== 0 &&
-              !cgState.isInProgress && (
-                <span className="text-[35px]">PUNCH TO START</span>
-              )}
-
-            {route === 'COUNTDOWN' &&
-              !isProductShowing &&
-              cgState.timeRemaining === 0 && (
-                <span className="text-[40px] leading-[15px]">
-                  SUBMIT TO <br /> LEADERBOARD
-                </span>
-              )}
-
-            {/* Soldout Labels */}
-            {route === 'SOLDOUT' && (
-              <>
-                {isShowingEmailInput ? (
-                  <>SUBMIT</>
-                ) : (
-                  <>
-                    CLICK HERE TO <br /> SAVE DESHEA!
-                  </>
-                )}
-              </>
-            )}
-          </h2>
+          <h2 className="text-[32px] font-bold">{buttonLabel}</h2>
         </button>
       </div>
 
       {/* Footer */}
-      {route === 'AVAILABLE' && <AvailableFooter />}
-      {route === 'COUNTDOWN' && <CountdownFooter />}
-      {route === 'SOLDOUT' && <SoldoutFooter />}
+      {footer}
     </div>
   );
 }
