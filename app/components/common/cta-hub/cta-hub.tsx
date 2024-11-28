@@ -26,7 +26,7 @@ interface CGState {
   currentImage: string;
 }
 export const cgInitState: CGState = {
-  timeRemaining: 5,
+  timeRemaining: 30,
   numPunches: 0,
   isInProgress: false,
   currentImage: damage0,
@@ -123,6 +123,12 @@ export function CTAHub() {
     route === 'AVAILABLE',
   );
 
+  const isGameActive = 
+    route === 'COUNTDOWN' && 
+    !isProductShowing && 
+    cgState.timeRemaining > 0 && 
+    cgState.isInProgress;
+
   /* Button Highlight */
   useEffect(() => {
     if (!enableFlash) return;
@@ -201,7 +207,7 @@ export function CTAHub() {
 
   let footer = <AvailableFooter />;
   if (route === 'COUNTDOWN') {
-    footer = <CountdownFooter />;
+    footer = <CountdownFooter isGameActive={isGameActive} />;
   }
   if (route === 'SOLDOUT') {
     footer = <SoldoutFooter />;
