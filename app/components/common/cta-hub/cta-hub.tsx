@@ -32,6 +32,13 @@ export const cgInitState: CGState = {
   currentImage: damage0,
 };
 
+const getImageForPunches = (numPunches: number): string => {
+  if (numPunches >= 99) return damage3;
+  if (numPunches >= 65) return damage2;
+  if (numPunches >= 32) return damage1;
+  return damage0;
+};
+
 const cgReducer = (state: CGState, action: {type: string}): CGState => {
   switch (action.type) {
     case 'START':
@@ -64,27 +71,9 @@ const cgReducer = (state: CGState, action: {type: string}): CGState => {
         };
       }
 
-      /* if game is in progress */
-
-      if (state.numPunches < 32) {
-        state.currentImage = damage0;
-      }
-
-      if (state.numPunches >= 32) {
-        state.currentImage = damage1;
-      }
-
-      if (state.numPunches >= 65) {
-        state.currentImage = damage2;
-      }
-
-      /* if game is in progress */
-      if (state.numPunches >= 99) {
-        state.currentImage = damage3;
-      }
-
       return {
         ...state,
+        currentImage: getImageForPunches(state.numPunches),
         numPunches: state.numPunches + 1,
       };
     default:
