@@ -12,8 +12,8 @@ import {
   type ShouldRevalidateFunction,
 } from '@remix-run/react';
 import favicon from '~/assets/favicon.svg';
-import resetStyles from '~/styles/reset.css?url';
-import appStyles from '~/styles/app.css?url';
+// import resetStyles from '~/styles/reset.css?url';
+// import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
 import {IonHaL} from './components/ionhal';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';

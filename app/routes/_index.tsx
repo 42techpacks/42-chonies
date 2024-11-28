@@ -22,7 +22,7 @@ export const meta: MetaFunction = () => {
 //   return json({});
 // };
 
-export default function Index() {
+export default function Available() {
   // Dummy Images
   const images = [
     {src: black_chonie, alt: 'Black Chonie 1'},
