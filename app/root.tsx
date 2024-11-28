@@ -12,11 +12,11 @@ import {
   type ShouldRevalidateFunction,
 } from '@remix-run/react';
 import favicon from '~/assets/favicon.svg';
-import resetStyles from '~/styles/reset.css?url';
-import appStyles from '~/styles/app.css?url';
+// import resetStyles from '~/styles/reset.css?url';
+// import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
 import {IonHaL} from './components/ionhal';
-import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
+import {THE_CHONIE_ONE, HEADER_QUERY} from '~/lib/fragments';
 import deshea_pissing from '~/assets/deshea3.png';
 
 export type RootLoader = typeof loader;
@@ -92,7 +92,9 @@ export async function loader(args: LoaderFunctionArgs) {
 async function loadCriticalData({context}: LoaderFunctionArgs) {
   const {storefront} = context;
 
-  const [header] = await Promise.all([
+  //TODO: change this to only query the brand logo and maybe the tunes
+  // so ricky has more flexibility
+  const [header, {products}] = await Promise.all([
     storefront.query(HEADER_QUERY, {
       cache: storefront.CacheLong(),
       variables: {
@@ -100,9 +102,16 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
       },
     }),
     // Add other queries here, so that they are loaded in parallel
+    storefront.query(THE_CHONIE_ONE, {variables: {query: 'shirt'}}),
   ]);
 
-  return {header};
+  const product = products.nodes[0];
+
+  if (!product?.id) {
+    //TODO: test this plays nice with milos error hanlder
+    throw new Response('we got no product', {status: 404});
+  }
+  return {header, product};
 }
 
 /**
@@ -111,25 +120,11 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
  * Make sure to not throw any errors here, as it will cause the page to 500.
  */
 function loadDeferredData({context}: LoaderFunctionArgs) {
-  const {storefront, customerAccount, cart} = context;
+  // NOTE: We need to query the cart for analytics even though we don't use it
+  const {cart} = context;
 
-  // defer the footer query (below the fold)
-  const footer = storefront
-    .query(FOOTER_QUERY, {
-      cache: storefront.CacheLong(),
-      variables: {
-        footerMenuHandle: 'footer', // Adjust to your footer menu handle
-      },
-    })
-    .catch((error) => {
-      // Log query errors, but don't throw them so the page can still render
-      console.error(error);
-      return null;
-    });
   return {
     cart: cart.get(),
-    isLoggedIn: customerAccount.isLoggedIn(),
-    footer,
   };
 }
 
@@ -152,8 +147,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
             shop={data.shop}
             consent={data.consent}
           >
-            {/* <PageLayout {...data}>{children}</PageLayout> */}
-            <IonHaL> {children} </IonHaL>
+            <IonHaL product={data.product}> {children} </IonHaL>
           </Analytics.Provider>
         ) : (
           children
