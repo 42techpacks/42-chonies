@@ -1,1 +1,1 @@
-export * from "./cta-hub";
+export * from './cta-hub';

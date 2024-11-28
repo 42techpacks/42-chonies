@@ -28,14 +28,15 @@ export type CTAAction =
   | {type: 'COUNTDOWN_TOGGLE_PRODUCT_VIEW'}
   | {type: 'SOLDOUT_TOGGLE_EMAIL_INPUT'}
   | {type: 'SOLDOUT_SET_SHOULD_SUBMIT'; shouldSubmit: boolean}
-  | {type: 'COUNTDOWN_TOGGLE_DESCRIPTION'};
+  | {type: 'COUNTDOWN_TOGGLE_DESCRIPTION'}
+  | {type: 'COUNTDOWN_TOGGLE_LEADERBOARD_INPUT'};
 
 export interface CTAState {
   availableSelectedSizeIs: Size | null;
   availableIsShowingSizeGuide: boolean;
   availableIsShowingDescription: boolean;
-  countdownIsProductShowing: boolean;
   countdownIsShowingDescription: boolean;
+  countdownIsShowingLeaderboardInput: boolean;
   soldoutIsShowingEmailInput: boolean;
   soldoutShouldSubmit: boolean;
 }
@@ -44,15 +45,13 @@ const initialState: CTAState = {
   availableSelectedSizeIs: null,
   availableIsShowingSizeGuide: false,
   availableIsShowingDescription: false,
-  countdownIsProductShowing: false,
   countdownIsShowingDescription: false,
+  countdownIsShowingLeaderboardInput: false,
   soldoutIsShowingEmailInput: false,
   soldoutShouldSubmit: false,
 };
 
-{
-  /* STEP 2: Update reducer to handle new dispatch (for new state/case) */
-}
+/* STEP 2: Update reducer to handle new dispatch (for new state/case) */
 
 const reducer = (state: CTAState, action: CTAAction): CTAState => {
   switch (action.type) {
@@ -72,6 +71,12 @@ const reducer = (state: CTAState, action: CTAAction): CTAState => {
       return {
         ...state,
         countdownIsShowingDescription: !state.countdownIsShowingDescription,
+      };
+    case 'COUNTDOWN_TOGGLE_LEADERBOARD_INPUT':
+      return {
+        ...state,
+        countdownIsShowingLeaderboardInput:
+          !state.countdownIsShowingLeaderboardInput,
       };
     case 'SOLDOUT_TOGGLE_EMAIL_INPUT':
       return {

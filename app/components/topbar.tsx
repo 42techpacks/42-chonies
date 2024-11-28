@@ -1,4 +1,3 @@
-import music from '~/assets/music-note.png';
 import {gsap} from 'gsap';
 import {useRef, useEffect} from 'react';
 import {Link} from '@remix-run/react';
@@ -16,6 +15,28 @@ export default function TopBar() {
       duration: 0.5,
       ease: 'power1.inOut',
     });
+
+    const shakeTimeline = gsap.timeline({paused: true});
+    shakeTimeline
+      .to(musicNoteRef.current, {
+        rotation: 10,
+        duration: 0.05,
+        repeat: 5,
+        yoyo: true,
+        ease: 'power1.inOut',
+      })
+      .to(musicNoteRef.current, {
+        rotation: -10,
+        duration: 0.1,
+        ease: 'power1.inOut',
+      });
+
+    // Repeat the shake animation every 7 seconds
+    const interval = setInterval(() => {
+      shakeTimeline.restart();
+    }, 3000);
+
+    return () => clearInterval(interval); // Cleanup interval on component unmount
   }, []);
 
   const iongafLogo = (

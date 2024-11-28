@@ -2,6 +2,7 @@
 // import {json, redirect} from '@remix-run/node';
 // import Countdown from "./countdown";
 import black_chonie from '~/assets/black-chonie.png';
+import deshea_pissing from '~/assets/deshea3.png';
 import type {MetaFunction} from '@remix-run/react';
 
 export const meta: MetaFunction = () => {
@@ -25,7 +26,7 @@ export default function Index() {
   // Dummy Images
   const images = [
     {src: black_chonie, alt: 'Black Chonie 1'},
-    {src: black_chonie, alt: 'Black Chonie 2'},
+    {src: deshea_pissing, alt: 'Black Chonie 2'},
     {src: black_chonie, alt: 'Black Chonie 3'},
     {src: black_chonie, alt: 'Black Chonie 4'},
     {src: black_chonie, alt: 'Black Chonie 1'},
@@ -51,7 +52,7 @@ export default function Index() {
         {images.map((image) => (
           <div
             key={image.alt}
-            className="w-full h-[430px] flex justify-center items-center"
+            className="overflow-hidden w-full h-[430px] flex justify-center items-center"
             id="image-container"
           >
             <img src={image.src} alt={image.alt} />
