@@ -106,6 +106,7 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
   ]);
 
   const product = products.nodes[0];
+  console.log(product);
 
   if (!product?.id) {
     //TODO: test this plays nice with milos error hanlder
