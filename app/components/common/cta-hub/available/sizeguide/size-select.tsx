@@ -1,8 +1,7 @@
-import {Size, useCTAState} from '~/contexts';
+import {type Size, useCTAState} from '~/contexts';
 
-export function SizeSelect() {
+export function SizeSelect({availableSizes}: {availableSizes: Size[]}) {
   // Dummy data for the size guide table
-  const sizeHeaderData: Size[] = ['S', 'M', 'L', 'XL', 'XXL']; // Dynamically defined sizes
   const {availableSelectedSizeIs: selectedSizeIs, dispatch} = useCTAState();
 
   return (
@@ -15,7 +14,7 @@ export function SizeSelect() {
           SELECT SIZE
         </h4>
       </th>
-      {sizeHeaderData.map((size, index) => (
+      {availableSizes.map((size, index) => (
         <th key={index} className={`h-[50px] p-0`}>
           <button
             className={`w-full h-full transition-all ${
