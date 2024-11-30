@@ -15,9 +15,11 @@ import favicon from '~/assets/favicon.svg';
 // import resetStyles from '~/styles/reset.css?url';
 // import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
-import {IonHaL} from './components/ionhal';
 import {THE_CHONIE_ONE, HEADER_QUERY} from '~/lib/fragments';
 import deshea_pissing from '~/assets/deshea3.png';
+import TopBar from './components/topbar';
+import {CTAHub} from './components/common/cta-hub';
+import {CTAProvider, type Size} from './contexts';
 
 export type RootLoader = typeof loader;
 
@@ -89,7 +91,7 @@ export async function loader(args: LoaderFunctionArgs) {
  * Load data necessary for rendering content above the fold. This is the critical data
  * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
  */
-async function loadCriticalData({context}: LoaderFunctionArgs) {
+async function loadCriticalData({context, request}: LoaderFunctionArgs) {
   const {storefront} = context;
 
   //TODO: change this to only query the brand logo and maybe the tunes
@@ -111,6 +113,7 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
     //TODO: test this plays nice with milos error hanlder
     throw new Response('we got no product', {status: 404});
   }
+
   return {header, product};
 }
 
@@ -141,13 +144,23 @@ export function Layout({children}: {children?: React.ReactNode}) {
         <Links />
       </head>
       <body>
+        <TopBar />
         {data ? (
           <Analytics.Provider
             cart={data.cart}
             shop={data.shop}
             consent={data.consent}
           >
-            <IonHaL product={data.product}> {children} </IonHaL>
+            <CTAProvider>
+              {children}
+              <CTAHub
+                availableSizes={
+                  data.product.options
+                    .find((opt) => opt.name.toLowerCase() === 'size')
+                    ?.optionValues.map((val) => val.name as Size) || []
+                }
+              />
+            </CTAProvider>
           </Analytics.Provider>
         ) : (
           children

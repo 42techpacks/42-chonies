@@ -24,8 +24,8 @@ interface AvailableProps {
 }
 export default function Available() {
   const root_data = useRouteLoaderData<RootLoader>('root');
-  if (!root_data?.product) return <div>Loading... </div>
-  const product = root_data.product
+  if (!root_data?.product) return <div>Loading... </div>;
+  const product = root_data.product;
   /* Load 'AVAILABLE' state by default */
   return (
     <div
