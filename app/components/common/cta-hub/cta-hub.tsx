@@ -1,4 +1,5 @@
 import {useState, useEffect, useReducer} from 'react';
+import type {Size} from '~/contexts';
 import {useCTAState} from '~/contexts';
 import {AvailableHeader, AvailableFooter, SizeGuide} from './available';
 import {CountdownHeader, CountdownFooter, CountdownTimer} from './countdown';
@@ -81,7 +82,7 @@ const cgReducer = (state: CGState, action: {type: string}): CGState => {
   }
 };
 
-export function CTAHub() {
+export function CTAHub({availableSizes}: {availableSizes: Size[]}) {
   const error = useRouteError();
   const nav = useNavigate();
   const location = useLocation();
@@ -178,7 +179,7 @@ export function CTAHub() {
     header = <SoldoutHeader />;
   }
 
-  let main = <SizeGuide />;
+  let main = <SizeGuide availableSizes={availableSizes} />;
   if (route === 'COUNTDOWN') {
     main = <CountdownTimer />;
   }

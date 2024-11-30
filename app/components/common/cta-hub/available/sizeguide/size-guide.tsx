@@ -1,7 +1,7 @@
 import {SizeSelect} from './size-select';
-import {useCTAState} from '~/contexts';
+import {type Size, useCTAState} from '~/contexts';
 
-export function SizeGuide() {
+export function SizeGuide({availableSizes}: {availableSizes: Size[]}) {
   const {availableIsShowingSizeGuide: isShowingSizeGuide} = useCTAState();
 
   const sizeGuideData = [
@@ -21,7 +21,7 @@ export function SizeGuide() {
     >
       <table className="overflow-hidden w-full h-full border-separate border border-[#ff4747] border-spacing-0 rounded-tl-[15px] rounded-tr-[15px]">
         <thead>
-          <SizeSelect />
+          <SizeSelect availableSizes={availableSizes} />
         </thead>
         <tbody className="align-top">
           {sizeGuideData.map((row) => (
