@@ -1,5 +1,5 @@
-const PRODUCT_VARIANT_FRAGMENT = `#graphql
-  fragment ProductVariant on ProductVariant {
+const CHONIE_PRODUCT_VARIANT_FRAGMENT = `#graphql
+  fragment ChonieProductVariant on ProductVariant {
     availableForSale
     id
     price {
@@ -15,8 +15,8 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
   }
 ` as const;
 
-const PRODUCT_FRAGMENT = `#graphql
-  fragment Product on Product {
+const CHONIE_PRODUCT_FRAGMENT = `#graphql
+  fragment ChonieProduct on Product {
     id
     title
     handle
@@ -58,40 +58,40 @@ const PRODUCT_FRAGMENT = `#graphql
 // ${PRODUCT_VARIANT_FRAGMENT}
 
 export const THE_CHONIE_ONE = `#graphql
-  query Products(
+  query ChonieProducts(
     $country: CountryCode
     $query: String!
     $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
     products(first: 1 query: $query) {
     nodes {
-      ...Product
+      ...ChonieProduct
       }
     }
   }
-  ${PRODUCT_FRAGMENT}
+  ${CHONIE_PRODUCT_FRAGMENT}
 ` as const;
 
-const PRODUCT_VARIANTS_FRAGMENT = `#graphql
-  fragment ProductVariants on Product {
+const CHONIE_PRODUCT_VARIANTS_FRAGMENT = `#graphql
+  fragment ChonieProductVariants on Product {
     variants(first: 250) {
       nodes {
-        ...ProductVariant
+        ...ChonieProductVariant
       }
     }
   }
-  ${PRODUCT_VARIANT_FRAGMENT}
+  ${CHONIE_PRODUCT_VARIANT_FRAGMENT}
 ` as const;
 
 const VARIANTS_QUERY = `#graphql
-  ${PRODUCT_VARIANTS_FRAGMENT}
-  query ProductVariants(
+  ${CHONIE_PRODUCT_VARIANTS_FRAGMENT}
+  query ChonieProductVariants(
     $country: CountryCode
     $language: LanguageCode
     $handle: String!
   ) @inContext(country: $country, language: $language) {
     product(handle: $handle) {
-      ...ProductVariants
+      ...ChonieProductVariants
     }
   }
 ` as const;
@@ -150,4 +150,168 @@ export const HEADER_QUERY = `#graphql
     }
   }
   ${MENU_FRAGMENT}
+` as const;
+
+// NOTE: https://shopify.dev/docs/api/storefront/latest/queries/cart
+export const CART_QUERY_FRAGMENT = `#graphql
+  fragment Money on MoneyV2 {
+    currencyCode
+    amount
+  }
+  fragment CartLine on CartLine {
+    id
+    quantity
+    attributes {
+      key
+      value
+    }
+    cost {
+      totalAmount {
+        ...Money
+      }
+      amountPerQuantity {
+        ...Money
+      }
+      compareAtAmountPerQuantity {
+        ...Money
+      }
+    }
+    merchandise {
+      ... on ProductVariant {
+        id
+        availableForSale
+        compareAtPrice {
+          ...Money
+        }
+        price {
+          ...Money
+        }
+        requiresShipping
+        title
+        image {
+          id
+          url
+          altText
+          width
+          height
+
+        }
+        product {
+          handle
+          title
+          id
+          vendor
+        }
+        selectedOptions {
+          name
+          value
+        }
+      }
+    }
+  }
+  fragment CartLineComponent on ComponentizableCartLine {
+    id
+    quantity
+    attributes {
+      key
+      value
+    }
+    cost {
+      totalAmount {
+        ...Money
+      }
+      amountPerQuantity {
+        ...Money
+      }
+      compareAtAmountPerQuantity {
+        ...Money
+      }
+    }
+    merchandise {
+      ... on ProductVariant {
+        id
+        availableForSale
+        compareAtPrice {
+          ...Money
+        }
+        price {
+          ...Money
+        }
+        requiresShipping
+        title
+        image {
+          id
+          url
+          altText
+          width
+          height
+        }
+        product {
+          handle
+          title
+          id
+          vendor
+        }
+        selectedOptions {
+          name
+          value
+        }
+      }
+    }
+  }
+  fragment CartApiQuery on Cart {
+    updatedAt
+    id
+    appliedGiftCards {
+      lastCharacters
+      amountUsed {
+        ...Money
+      }
+    }
+    checkoutUrl
+    totalQuantity
+    buyerIdentity {
+      countryCode
+      customer {
+        id
+        email
+        firstName
+        lastName
+        displayName
+      }
+      email
+      phone
+    }
+    lines(first: $numCartLines) {
+      nodes {
+        ...CartLine
+      }
+      nodes {
+        ...CartLineComponent
+      }
+    }
+    cost {
+      subtotalAmount {
+        ...Money
+      }
+      totalAmount {
+        ...Money
+      }
+      totalDutyAmount {
+        ...Money
+      }
+      totalTaxAmount {
+        ...Money
+      }
+    }
+    note
+    attributes {
+      key
+      value
+    }
+    discountCodes {
+      code
+      applicable
+    }
+  }
 ` as const;
